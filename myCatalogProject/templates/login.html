@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>My Team Catalog</title>
+	<link href='http://fonts.googleapis.com/css?family=Roboto:400,300,700' rel='stylesheet' type='text/css'>
+	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+	<link rel=stylesheet type=text/css href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+	<script src="https://apis.google.com/js/client:platform.js?onload=start" async defer></script>
+	<script>
+	  function start() {
+	    gapi.load('auth2', function() {
+	      auth2 = gapi.auth2.init({
+	        client_id: '524717795830-gagme3qcnqn994g86i6l1cmmt83nnkr6.apps.googleusercontent.com'
+	      });
+	    });
+	  }
+	</script>
+   </head>
+  <body>
+  <div class="container">
+	{% block content %}
+	{% endblock %}
+	{% include "header.html" %}	
+  
+<div class="row banner main">
+	<div class="col-md-11 col-md-offset-1 padding-none">
+		<h1>Login page</h1>
+	</div>
+</div>
+<!-- check to see if the user is already login -->	
+<div class="row col-md-4">
+	<div class=col-md-4></div>
+	{% if 'username' not in session %}
+		<button id="signinButton">Google Sign In</button>
+		<div id="result"></div>
+	{% else %}
+		<a href="{{url_for('disconnect')}}">Click Here to Log Out </a>
+	{% endif %}
+	<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+  	<div class=col-md-4></div>
+</div> 		
+<script>
+      function onSignIn(googleUser) {
+        // Useful data for your client-side scripts:
+        var profile = googleUser.getBasicProfile();
+        console.log("ID: " + profile.getId()); // Don't send this directly to your server!
+        console.log('Full Name: ' + profile.getName());
+        console.log('Given Name: ' + profile.getGivenName());
+        console.log('Family Name: ' + profile.getFamilyName());
+        console.log("Image URL: " + profile.getImageUrl());
+        console.log("Email: " + profile.getEmail());
+
+        // The ID token you need to pass to your backend:
+        var id_token = googleUser.getAuthResponse().id_token;
+        console.log("ID Token: " + id_token);
+      }
+</script>
+<script>
+	  $('#signinButton').click(function() {
+	    function signInCallback(authResult){
+	      if (authResult['code']){
+	        $('#signinButton').attr('style', 'display: none');
+	        $.ajax({
+	          type: 'POST',
+	          url: '/gconnect?state={{STATE}}',
+	          headers: {
+	          'X-Requested-With': 'XMLHttpRequest'
+	          },
+	          contentType: 'application/octet-stream; charset=utf-8',
+	          success:function(result){
+	            $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
+	                 setTimeout(function() {
+	                  window.location.href = "/";
+	                 }, 3000);
+	          },
+	          processData:false,
+	          data:authResult['code']
+	        });
+	      } else{
+	        // handle error
+	        console.log('There was an error: ' + authResult['error']);
+	        $('#result').html('Failed to make a server-side call. Check your configuration and console.');
+	      }
+	    }
+	    auth2.grantOfflineAccess().then(signInCallback);
+	  });
+</script>
+</body>
+</html>

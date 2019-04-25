@@ -1,0 +1,62 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+	
+<div class="row banner main">
+	<div class="col-md-11 col-md-offset-1 padding-none">
+		<h1>{{ category.name }} Items </h1>
+		This category of items can only be add/edited/deleted by {{ creator.name }}
+	</div>
+</div>
+<div class="row padding-top padding-bottom">
+	<div class="col-md-1"></div>
+	<div class="col-md-11 padding-none"></div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		{% with messages = get_flashed_messages() %}
+			{% if messages %}
+				<ul>
+					{% for message in messages %}
+						 <li> <strong> {{ message }} </strong> </li>
+					{% endfor %}
+				</ul>
+			{% endif %}
+		{% endwith %}
+	</div>
+</div>
+{% if 'username' in session %}
+<div class="row row-eq-height">
+	<div class="col-md-1"></div>
+	<div class="col-md-1">
+		<a href="{{url_for('newCatItem', category_id = category.id)}}">
+			<button class="btn add btn-default" id="new-item">
+				<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Add New Item
+			</button>
+		</a>
+	</div>
+	<div class="col-md-10"></div>
+</div>
+{% endif %}
+			
+{% if items !=[] %}		
+	{% for i in items %}
+		<div class="row row-eq-height">
+			<div class="col-md-1"></div>
+			<div class="col-md-6 category-list">
+				<h3>{{i.name}}</h3>
+				<p>{{i.description}}</p>			
+			</div>
+   			{% if 'username' in session %}
+				<div class="col-md-1 category-list">
+					<a href="{{url_for('editCatItem', item_id = i.id, category_id = category.id )}}"><h4>Edit</h4></a>
+				</div>
+				<div class="col-md-1 category-list">
+					<a href="{{url_for('deleteCatItem', item_id = i.id, category_id = category.id)}}"><h4>Delete</h4></a>
+				</div>
+				<div class="col-md-3"></div>
+		 	{% endif %}
+		</div>
+	{% endfor %}
+{% endif %}
+{% endblock %}

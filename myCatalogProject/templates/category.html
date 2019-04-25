@@ -1,0 +1,52 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row banner main">
+	<div class="col-md-11 col-md-offset-1 padding-none">
+		<h1>Restuarant Types</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+	{% with messages = get_flashed_messages() %}
+		{% if messages %}
+			<ul>
+			{% for message in messages %}
+				<li> <strong> {{ message }} </strong> </li>
+			{% endfor %}
+			</ul>
+		{% endif %}
+	{% endwith %}
+	</div>
+</div>
+<div class="row row-eq-height">
+	<div class="col-md-1"></div>
+	<div class ="col-md-1">
+		<a href="{{url_for('newCategory')}}">
+			<button class="btn add btn-default" id="new-category">
+				<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Add a new Restuarant Type
+			</button>
+		</a>
+	</div>
+	<div class="col-md-10"></div>
+</div>
+{% for category in categories %}
+	<div class="row">
+		<div class="col-md-1"></div>
+		<div class="col-md-5 category-list">
+			<a href = "{{url_for('showItem', category_id = category.id)}}">
+				<h3>{{category.name}}</h3>
+			</a>
+		</div>
+		{% if 'username' in session %}
+			<div class="col-md-1 category-list">
+				<a href="{{url_for('editCategory', category_id = category.id)}}"><h4>Edit</h4></a>
+			</div>
+			<div class="col-md-1 category-list">
+				<a href="{{url_for('deleteCategory', category_id = category.id)}}"><h4>Delete</h4></a>
+			</div>
+			<div class="col-md-4"></div>
+		{% endif %}
+	</div>
+{% endfor %}
+{% endblock %}

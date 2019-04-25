@@ -1,0 +1,30 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+
+<div class="row banner main">
+	<div class="col-md-11 col-md-offset-1 padding-none">
+		<h1>Add Restaurant Type</h1>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-6 col-md-offset-1 padding-top">
+		<form action="#" method = "post">
+			<div class="form-group">
+				<label for="name">Restaurant Type:</label>
+				<input type ="text" class="form-control" maxlength="60" name="name" required>
+				<div class="padding-bottom"></div>
+				<button type="submit" class="btn add btn-default" id="submit" type="submit">
+				<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>Create</button>
+			</div>
+		</form>
+	</div>
+</div>
+<div class = "col-md-1 col-md-offset-1 padding-none">
+	<a href="{{url_for('showCategories')}}">
+		<button class="btn cancel btn-default" id="new-category">
+			<span class="glyphicon glyphicon-remove" aria-hidden="true"></span>Cancel
+		</button>
+	</a>
+</div>
+{% endblock %}
